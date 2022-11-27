@@ -26,5 +26,11 @@ module SharedHelpers
     def linkable_fullpath(fullpath)
       Dir.glob(fullpath.gsub(File::SEPARATOR, '\\0{.,}').remove(' '), File::FNM_DOTMATCH).first || fullpath
     end
+
+    def root_path
+      return Rails.root if defined?(Rails.root)
+
+      Pathname.new('.').expand_path
+    end
   end
 end
