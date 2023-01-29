@@ -32,5 +32,15 @@ module SharedHelpers
 
       Pathname.new('.').expand_path
     end
+
+    def load_relative(relative_path, extension: '.rb')
+      relative_path += extension if File.extname(relative_path).blank?
+
+      caller_file = File.dirname(caller.first)
+      caller_file = root_path.to_s unless caller_file[root_path.to_s] # Set it to root if it's outside the repo
+      fullpath = File.expand_path(relative_path, caller_file)
+
+      require(fullpath) || silence_warnings { load(fullpath) }
+    end
   end
 end
