@@ -43,4 +43,21 @@ module SharedHelpers
       require(fullpath) || silence_warnings { load(fullpath) }
     end
   end
+
+  def wtf
+    @exception = $!.dup || @exception
+    return if @exception.nil?
+
+    message = @exception.full_message(highlight: true)
+    cause_message = @exception.cause&.full_message(highlight: true)
+    message.gsub!(cause_message.to_s, '') # String#remove is not in bare Ruby
+    print "Exception: #{@exception.class}:\n"
+    puts message.lines[1..-1].join
+
+    nil
+  end
+
+  def console?
+    defined?(IRB) || defined?(Pry) || defined?(Rails::Console)
+  end
 end
