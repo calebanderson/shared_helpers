@@ -45,7 +45,16 @@ module SharedHelpers
   end
 
   def wtf
-    @exception = $!.dup || @exception
+    if block_given?
+      begin
+        yield
+      rescue => e
+        @exception = e
+      end
+    else
+      @exception = $!.dup || @exception
+    end
+
     return if @exception.nil?
 
     message = @exception.full_message(highlight: true)
